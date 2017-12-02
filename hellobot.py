@@ -2,6 +2,25 @@ import os
 import time
 from slackclient import SlackClient
 
+from textblob.classifiers import NaiveBayesClassifier
+from textblob import TextBlob
+
+# greeting classification training data
+train = [
+    ('Hi!', 'greeting'),
+    ('Hello', 'greeting'),
+    ('Hey!', 'greeting'),
+    ('Hi everyone', 'greeting'),
+    ("Hey bot", 'greeting'),
+    ('His car is nice!', 'other'),
+    ('Hey, you\'re a bot!', 'other'),
+    ("I said hi to him the other day", 'other'),
+    ('He is my sworn enemy!', 'other'),
+    ('My boss is horrible.', 'other')
+]
+
+cl = NaiveBayesClassifier(train)
+
 # starterbot's ID as an environment variable
 BOT_ID = os.environ.get("BOT_ID")
 
@@ -12,22 +31,18 @@ EXAMPLE_COMMAND = "hi"
 # instantiate Slack & Twilio clients
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 
+if "0".isalpha():
+    print("yep")
+
 def handle_command(command, channel, user):
     """
         Receives commands directed at the bot and determines if they
         are valid commands. If so, then acts on the commands. If not,
         returns back what it needs for clarification.
     """
-    response = "Not sure what you mean. Use the *" + EXAMPLE_COMMAND + \
-               "* command with numbers, delimited by spaces."
-    if len(command) is 2:
-        justHi = True
-    elif not command[2].isalpha:
-        justHi = True
-    else:
-        justHi = True
-    if command.startswith(EXAMPLE_COMMAND) and justHi: # replace this with nlp boolean
-        response = "Hi <@" + user + ">!"
+    response = "I just say hello man, don't bother me."
+    if cl.classify(command) == "greeting": # replace this with nlp boolean
+        response = "Hi <@" + user + ">! I'm John's bot."
     slack_client.api_call("chat.postMessage", channel=channel,
                           text=response, as_user=True)
 
