@@ -3,7 +3,7 @@ import time
 from slackclient import SlackClient
 
 # starterbot's ID as an environment variable
-BOT_ID = os.environ.get("BOT_ID")
+sudBOT_ID = os.environ.get("BOT_ID")
 
 # constants
 AT_BOT = "<@" + BOT_ID + ">"
@@ -20,7 +20,7 @@ def handle_command(command, channel, user):
     """
     response = "Not sure what you mean. Use the *" + EXAMPLE_COMMAND + \
                "* command with numbers, delimited by spaces."
-    if command.startswith(EXAMPLE_COMMAND) and not command[3].isalpha: # replace this with nlp boolean
+    if command.startswith(EXAMPLE_COMMAND) and (not command[2].isalpha or len(string) == 2): # replace this with nlp boolean
         response = "Hi <@" + user + ">!"
     slack_client.api_call("chat.postMessage", channel=channel,
                           text=response, as_user=True)
