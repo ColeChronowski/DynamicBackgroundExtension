@@ -20,7 +20,7 @@ def handle_command(command, channel, user):
     """
     response = "Not sure what you mean. Use the *" + EXAMPLE_COMMAND + \
                "* command with numbers, delimited by spaces."
-    if command.startswith(EXAMPLE_COMMAND): # replace this with nlp boolean
+    if command.startswith(EXAMPLE_COMMAND) & not command[3].isalpha: # replace this with nlp boolean
         response = "Hi <@" + user + ">!"
     slack_client.api_call("chat.postMessage", channel=channel,
                           text=response, as_user=True)
